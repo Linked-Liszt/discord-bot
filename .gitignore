@@ -1,3 +1,4 @@
 *.json
 dsb_env
 __pycache__
+configs/bot.txt
