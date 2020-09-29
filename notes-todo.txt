@@ -1,0 +1,17 @@
+TODO:
+- Build automated pipeline to extract data.
+
+- Use ignored files to provide configuration and exclude sensitive data from git.
+
+- Update readme at end of project.
+
+
+Notes:
+- Varying levels of markov models
+
+- Could use look-ahead methods. Might be able to reuse model files.
+
+- Could train transformer models using huggingface libraries.
+  - https://huggingface.co/blog/how-to-train
+
+- Could use OCR to extract best messages from pinned images.
