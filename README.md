@@ -1,9 +1,8 @@
-# Discord Stats & Bot
+# Discord Bot
 
 The project began by collecting stats on a discord server with a few close friends.
 
-Using that data, the bot has two main features.
-
-1. Output markov chains, by user, based off the history of the discord server. Also included a combined model and some fun models.
-
-2. A RNG "league" which where users could challenge each other to see who had the best luck. Included an elo system to keep track of who was luckiest.
+The primary goals of the project are:
+* Create a pipeline to gather, filter, and build language models from data.
+* Serve model text generation via a discord bot.
+* Various other bot shenanigans.
