@@ -13,7 +13,9 @@ def create_all_models() -> None:
     with open(du.CONFIG_FP, 'r') as config_f:
         config = json.load(config_f)
 
-    user_data = split_by_user(pd.read_csv(du.ALL_CLEAN_FP), config)
+    full_data = pd.read_csv(du.ALL_CLEAN_FP)
+    user_data = split_by_user(full_data, config)
+    user_data['everyone'] = full_data
 
     for user, user_data in user_data.items():
         create_model_set(user, user_data, config)
