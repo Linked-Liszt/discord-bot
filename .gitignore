@@ -1,6 +1,12 @@
 *.json
-dsb_env
-__pycache__
-configs/bot.txt
-export_cli
 *.csv
+
+configs/bot.txt
+
+dsb_env
+export_cli
+
+__pycache__
+.ipynb_checkpoints
+
+sandbox.ipynb
