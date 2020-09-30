@@ -5,30 +5,22 @@ import logging
 import json
 import re
 
-CONFIG_FP = '../configs/cleaning_config.json'
-"""
-Config Structure:
-{
-    "users": [
-        "user 1"
-    ],
-    "dup_users": [
-        ["dup_user_1", "dup_user_2"]
-    ]
-
-}
-"""
+OUTPUT_FP = '../data_clean/all_users_clean.json'
 
 def clean_data() -> None:
-    with open(CONFIG_FP, 'r') as config_f:
+    with open(du.CONFIG_FP, 'r') as config_f:
         config = json.load(config_f)
 
-    full_data = combine_all_data()
+    full_data = combine_all_data(config)
+    filtered_data = filter_all_messages(filter_global(full_data, config))
+    filtered_data.to_csv(OUTPUT_FP)
 
 
-def combine_all_data() -> pd.DataFrame:
+def combine_all_data(config: dict) -> pd.DataFrame:
     full_data = None
     for data_fp in du.get_data_files(du.RAW_DATA_DIR, '.csv'):
+        if any(ignore in data_fp for ignore in config['raw_ignore']):
+            continue
         if full_data is None:
             full_data = pd.read_csv(data_fp)
         else:
@@ -64,7 +56,7 @@ def filter_all_messages(full_data: pd.DataFrame) -> pd.DataFrame:
 
 
 def filter_message(text: str) -> str:
-    filter_text = re.sub(r'^https?:\/\/.*[\r\n]*', '', str(text), flags=re.MULTILINE)
+    filter_text = re.sub(r'(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?', '', str(text), flags=re.MULTILINE)
     filter_text = re.sub(r'@\w+', '', str(filter_text), flags=re.MULTILINE)
     filter_text = filter_text.replace('@', '@/')
     return filter_text.strip()

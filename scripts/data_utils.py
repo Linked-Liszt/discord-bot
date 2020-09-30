@@ -1,6 +1,7 @@
 import os
 import typing
 
+CONFIG_FP = '../configs/preprocessing_config.json'
 TOKEN_LOCATION = "../configs/bot.txt"
 RAW_DATA_DIR = "../data_raw"
 
