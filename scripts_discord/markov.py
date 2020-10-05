@@ -1,14 +1,35 @@
+import discord_module as dm
 import markovify
+import discord
 import os
 import json
 
 DEFAULT_N = 3
 DEFAULT_NUM_SENTENCES = 5
 
-class ModelManager():
+class Markov(dm.DiscordModule):
     def __init__(self, models_dir: str):
         self.models_dir = models_dir
         self._find_models()
+        self.info = ("These models are word tokenized, n-gram markov models.\n"
+            + "For more info see: <https://en.wikipedia.org/wiki/Language_model#n-gram>\n"
+            + "In non-math speak, the model looks at the [n] previous words and attempts "
+            + "to guess what the next word is. Rinse and repeat to create sentences and paragraphs.")
+
+        self.commands = {
+            "!sim [name]": "Simulate a goon with a standard tri-gram model",
+            "!sim#[n] [name]": "Simulate a goon with a [n]-gram model",
+            "!list": "List avaliable models and n",
+            "!info:": "Info about n-gram markov models"
+        }
+
+    async def handle_message(self, message: discord.Message):
+        if message.content.lower().startswith("!list"):
+            await message.channel.send(self._list_models())
+
+        elif (message.content.lower().startswith("!sim ")
+            or message.content.lower().startswith("!sim#")):
+            await message.channel.send(self._serve_model(message.content.lower()))
 
     def _find_models(self) -> None:
         self.models = []
@@ -26,10 +47,10 @@ class ModelManager():
                 self.max_n = max(n_value, self.max_n)
                 self.min_n = min(n_value, self.min_n)
 
-    def list_models(self) -> str:
+    def _list_models(self) -> str:
         return ', '.join(self.models) + "\n2 <= n <= 10"
 
-    def serve_model(self, command: str) -> str:
+    def _serve_model(self, command: str) -> str:
         try:
             model_name, n = self._parse_command(command)
         except ValueError as e:
@@ -76,9 +97,3 @@ class ModelManager():
             raise ValueError('Error: Unknown Model. See !models')
 
         return model, n
-
-    def info(self) -> str:
-        return ("These models are word tokenized, n-gram markov models.\n"
-            + "For more info see: <https://en.wikipedia.org/wiki/Language_model#n-gram>\n"
-            + "In non-math speak, the model looks at the [n] previous words and attempts "
-            + "to guess what the next word is. Rinse and repeat to create sentences and paragraphs.")
