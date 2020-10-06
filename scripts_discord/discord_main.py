@@ -1,13 +1,18 @@
 import discord
 import random
 import markovify as mk
-import model_manager as mm
-import data_utils as du
+import markov_module as mm
+import json
+import discord_utils as du
+import rate_module as rm
 
 MODEL_DIRS = '../markov_models'
 
 client = discord.Client()
-model_mgr = mm.ModelManager(MODEL_DIRS)
+with open('../configs/discord_config.json') as config_f:
+    config = json.load(config_f)
+
+modules = [mm.Markov(), rm.Rate()]
 
 @client.event
 async def on_message(message: discord.Message):
@@ -15,12 +20,9 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    #Ignore DMs
-    if message.guild is False:
+    #Ignore DMs and other guilds
+    if message.guild is False or message.guild not in config['guild_whitelist']:
         return
-
-    if message.content.lower().startswith("!list"):
-        await message.channel.send(model_mgr.list_models())
 
     elif (message.content.lower().startswith("!sim ")
         or message.content.lower().startswith("!sim#")):
@@ -38,6 +40,7 @@ async def on_message(message: discord.Message):
 
     elif message.content.lower().startswith("!info"):
         await message.channel.send(model_mgr.info())
+
 
 
 @client.event

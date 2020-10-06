@@ -10,6 +10,7 @@ DEFAULT_NUM_SENTENCES = 5
 class Markov(dm.DiscordModule):
     def __init__(self, models_dir: str):
         self.models_dir = models_dir
+        self.module_abbrev = 'markov'
         self._find_models()
         self.info = ("These models are word tokenized, n-gram markov models.\n"
             + "For more info see: <https://en.wikipedia.org/wiki/Language_model#n-gram>\n"

@@ -6,6 +6,7 @@ class DiscordModule():
     functions.
 
     Required Vars:
+        -module_abbrev (str): abbreviation to reference the module
         -info (str): Long form info of commands.
         -commands: (dict): keys: commands values: short description
             of command
