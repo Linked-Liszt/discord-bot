@@ -65,7 +65,7 @@ class Markov(dm.DiscordModule):
         model = markovify.Text.from_json(model_json)
         output = ""
         for _ in range(DEFAULT_NUM_SENTENCES):
-            sentence = model.make_sentence(tries=100, test_output=False)
+            sentence = model.make_sentence(tries=100)
             if sentence is not None:
                 output += sentence + ' '
         return output
@@ -81,8 +81,6 @@ class Markov(dm.DiscordModule):
                 n = int(split_command[0].split('#')[1].strip())
             except ValueError:
                 raise ValueError('Error: Malformed n value for !sim#')
-
-            print(self.min_n)
 
             if n > self.max_n:
                 raise ValueError(f'Error: n > max n. Max n is {self.max_n}')

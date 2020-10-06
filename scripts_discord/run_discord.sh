@@ -1,2 +1,4 @@
+source ../dsb_env/bin/activate
 python discord_main.py &
-disown > pid.txt
+jobs -l > pid.txt
+disown

@@ -62,8 +62,11 @@ class Rate(dm.DiscordModule):
             descr = 'very confusing'
         return f"Flesch: {fle} ({descr})"
 
+    def _ord(self, n: int) -> str:
+        return "%d%s" % (n,"tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
+
     def _linsear(self, text: str) -> str:
-        return f"Linsear: {round(textstat.linsear_write_formula(text))} grade"
+        return f"Linsear: {self._ord(round(textstat.linsear_write_formula(text)))} grade"
 
     def _dale_chall_test(self, text: str) -> str:
         dc = textstat.dale_chall_readability_score(text)
