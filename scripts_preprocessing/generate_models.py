@@ -10,7 +10,7 @@ def create_all_models() -> None:
     Extracts data from the cleaned file
     and creates all sets of models.
     """
-    with open(du.CONFIG_FP, 'r') as config_f:
+    with open(du.CONFIG_FP, 'r', encoding='utf-8') as config_f:
         config = json.load(config_f)
 
     full_data = pd.read_csv(du.ALL_CLEAN_FP)

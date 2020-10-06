@@ -11,7 +11,7 @@ def clean_data() -> None:
     Runs all cleaning methods and outputs unified file to
     specified location.
     """
-    with open(du.CONFIG_FP, 'r') as config_f:
+    with open(du.CONFIG_FP, 'r', encoding='utf-8') as config_f:
         config = json.load(config_f)
 
     full_data = combine_all_data(config)
