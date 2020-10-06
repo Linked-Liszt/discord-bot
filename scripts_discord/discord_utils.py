@@ -1,4 +1,5 @@
 import os
+import typing
 
 TOKEN_LOCATION = "../configs/bot.txt"
 MODELS_DIR = '../markov_models'

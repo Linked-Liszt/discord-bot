@@ -4,13 +4,13 @@ import discord
 import os
 import json
 
-DEFAULT_N = 3
+DEFAULT_N = 2
 DEFAULT_NUM_SENTENCES = 5
 
 class Markov(dm.DiscordModule):
     def __init__(self, models_dir: str):
         self.models_dir = models_dir
-        self.module_abbrev = 'markov'
+        self.abbrev = 'markov'
         self._find_models()
         self.info = ("These models are word tokenized, n-gram markov models.\n"
             + "For more info see: <https://en.wikipedia.org/wiki/Language_model#n-gram>\n"
@@ -20,12 +20,11 @@ class Markov(dm.DiscordModule):
         self.commands = {
             "!sim [name]": "Simulate a goon with a standard tri-gram model",
             "!sim#[n] [name]": "Simulate a goon with a [n]-gram model",
-            "!list": "List avaliable models and n",
-            "!info:": "Info about n-gram markov models"
+            "!models": "List avaliable models and n",
         }
 
     async def handle_message(self, message: discord.Message):
-        if message.content.lower().startswith("!list"):
+        if message.content.lower().startswith("!models"):
             await message.channel.send(self._list_models())
 
         elif (message.content.lower().startswith("!sim ")
@@ -49,7 +48,7 @@ class Markov(dm.DiscordModule):
                 self.min_n = min(n_value, self.min_n)
 
     def _list_models(self) -> str:
-        return ', '.join(self.models) + "\n2 <= n <= 10"
+        return ', '.join(self.models) + f"\n{self.min_n} <= n <= {self.max_n}"
 
     def _serve_model(self, command: str) -> str:
         try:
