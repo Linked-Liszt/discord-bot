@@ -2,7 +2,7 @@ import json
 import data_utils as du
 import os
 
-EXPORTER_LOCATION = "..\\export_cli\\DiscordChatExporter.Cli.exe"
+EXPORTER_LOCATION = "..\\preprocessing_data\\export_cli\\DiscordChatExporter.Cli.exe"
 """
 JSON Structure:
 [

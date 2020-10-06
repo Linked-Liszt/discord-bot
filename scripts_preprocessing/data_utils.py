@@ -3,8 +3,8 @@ import typing
 
 CONFIG_FP = '../configs/preprocessing_config.json'
 TOKEN_LOCATION = "../configs/bot.txt"
-RAW_DATA_DIR = "../data_raw"
-ALL_CLEAN_FP = '../data_clean/all_users_clean.csv'
+RAW_DATA_DIR = "../preprocessing_data/data_raw"
+ALL_CLEAN_FP = '../preprocessing_data/data_clean/all_users_clean.csv'
 MODELS_DIR = '../markov_models'
 
 def get_token(token_fp: str = TOKEN_LOCATION) -> str:
