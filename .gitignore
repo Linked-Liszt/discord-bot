@@ -3,6 +3,8 @@
 
 configs/bot.txt
 
+repost_dbs
+
 dsb_env
 export_cli
 
@@ -10,3 +12,4 @@ __pycache__
 .ipynb_checkpoints
 
 sandbox.ipynb
+sandbox
