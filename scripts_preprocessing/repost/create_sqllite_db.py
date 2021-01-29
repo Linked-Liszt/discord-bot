@@ -11,6 +11,7 @@ def create_db(fp: str):
                                 hash blob PRIMARY KEY,
                                 len integer NOT NULL,
                                 original_date integer,
+                                original_poster text,
                                 last_date integer
                                 )
     """
@@ -19,6 +20,7 @@ def create_db(fp: str):
                                 hash blob PRIMARY KEY,
                                 len integer NOT NULL,
                                 original_date integer,
+                                original_poster text,
                                 last_date integer
                                 )
     """
@@ -26,13 +28,17 @@ def create_db(fp: str):
     sql_create_links_table = """ CREATE TABLE IF NOT EXISTS links (
                                 link text PRIMARY KEY,
                                 original_date integer,
-                                last_date integer
+                                original_author text,
+                                last_date integer,
+                                last_author,
+                                num_reposts integer
                                 )
     """
 
     cur = conn.cursor()
     cur.execute(sql_create_file_table)
     cur.execute(sql_create_ims_table)
+    cur.execute(sql_create_links_table)
 
     conn.commit()
     conn.close()
