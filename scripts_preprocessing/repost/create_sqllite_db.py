@@ -10,6 +10,7 @@ def create_db(fp: str):
     sql_create_file_table = """ CREATE TABLE IF NOT EXISTS files (
                                 hash blob PRIMARY KEY,
                                 len integer NOT NULL,
+                                link text,
                                 original_date integer,
                                 original_author text,
                                 last_date integer,
@@ -21,6 +22,7 @@ def create_db(fp: str):
     sql_create_ims_table = """ CREATE TABLE IF NOT EXISTS imgs (
                                 hash blob PRIMARY KEY,
                                 len integer NOT NULL,
+                                link text,
                                 original_date integer,
                                 original_author text,
                                 last_date integer,
