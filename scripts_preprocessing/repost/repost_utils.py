@@ -128,7 +128,7 @@ def check_hash_table(conn: sqlite3.Connection, is_img: bool, hash_data: HashData
 
     if is_original:
         _insert_hash(conn, table, hash_data)
-        repost = RepostData()
+        repost = RepostData(None, None, None, None, None, None)
 
     else:
         _update_hash(conn, table, hash_data, hits[0][4])
@@ -201,7 +201,7 @@ def check_url_table(conn: sqlite3.Connection, link_data: LinkData):
 
     if is_original:
         _insert_url(conn, link_data)
-        repost = RepostData()
+        repost = RepostData(None, None, None, None, None, None)
 
     else:
         _update_url(conn, link_data, hits[0][4])

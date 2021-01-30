@@ -3,7 +3,7 @@ import sqlite3
 import hashlib
 import PIL.Image
 import repost_utils as ru
-import urllib
+import urllib.request
 import pandas as pd
 import dateutil.parser
 
@@ -14,7 +14,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 def populate_urls(chat_data: pd.DataFrame, db: sqlite3.Connection):
-    for _, row in chat_data.iterrows():
+    for i, row in chat_data.iterrows():
         links = ru.extract_urls(str(row['Content']))
         link_date = dateutil.parser.parse(row['Date'])
 
@@ -25,15 +25,14 @@ def populate_urls(chat_data: pd.DataFrame, db: sqlite3.Connection):
                 row['Author']
             )
 
-            print(link_data)
-            input()
-
             ru.check_url_table(db, link_data)
+        print(f'{i}/{len(chat_data)} urls')
 
 def _download_file(url: str) -> (bool, bytes):
     is_valid = True
+    data = None
     try:
-        with urllib.request.urlopen(url) as response:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'Mozilla'})) as response:
             data = response.read()
     except Exception as e:
         print(f'URL error: {e}')
@@ -43,8 +42,8 @@ def _download_file(url: str) -> (bool, bytes):
 
 
 def populate_files(chat_data: pd.DataFrame, db: sqlite3.Connection):
-    for _, row in chat_data.iterrows():
-        if row['Attachments'] is str:
+    for i, row in chat_data.iterrows():
+        if type(row['Attachments']) is str:
             is_valid, data = _download_file(row['Attachments'])
             if is_valid:
                 is_img, f_len, f_hash = ru.calculate_hash(row['Attachments'], data)
@@ -57,6 +56,8 @@ def populate_files(chat_data: pd.DataFrame, db: sqlite3.Connection):
                                         row['Author']
                 )
                 ru.check_hash_table(db, is_img, hash_data)
+                print('File Hashed')
+        print(f'{i}/{len(chat_data)} files')
 
 
 def main():
@@ -67,8 +68,6 @@ def main():
 
     populate_urls(chat_data, db)
     populate_files(chat_data, db)
-
-    print('gothere')
 
     db.close()
 
