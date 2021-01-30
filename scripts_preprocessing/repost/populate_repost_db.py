@@ -4,6 +4,7 @@ import hashlib
 import PIL.Image
 import repost_utils as ru
 import urllib.request
+import json
 import pandas as pd
 import dateutil.parser
 
@@ -13,8 +14,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('channel_db', help='Discord Channel ID')
     return parser.parse_args()
 
-def populate_urls(chat_data: pd.DataFrame, db: sqlite3.Connection):
+def populate_urls(chat_data: pd.DataFrame, db: sqlite3.Connection, ignore_users: list):
     for i, row in chat_data.iterrows():
+
+        if row['Author'] in ignore_users:
+           continue
+
         links = ru.extract_urls(str(row['Content']))
         link_date = dateutil.parser.parse(row['Date'])
 
@@ -41,9 +46,10 @@ def _download_file(url: str) -> (bool, bytes):
     return is_valid, data
 
 
-def populate_files(chat_data: pd.DataFrame, db: sqlite3.Connection):
+def populate_files(chat_data: pd.DataFrame, db: sqlite3.Connection, ignore_users: list):
+    num_errors = 0
     for i, row in chat_data.iterrows():
-        if type(row['Attachments']) is str:
+        if type(row['Attachments']) is str and row['Author'] not in ignore_users:
             is_valid, data = _download_file(row['Attachments'])
             if is_valid:
                 is_img, f_len, f_hash = ru.calculate_hash(row['Attachments'], data)
@@ -57,7 +63,10 @@ def populate_files(chat_data: pd.DataFrame, db: sqlite3.Connection):
                 )
                 ru.check_hash_table(db, is_img, hash_data)
                 print('File Hashed')
+            else:
+                num_errors += 1
         print(f'{i}/{len(chat_data)} files')
+    print(f'Total Errors {num_errors}')
 
 
 def main():
@@ -66,8 +75,11 @@ def main():
 
     chat_data = pd.read_csv(args.channel_csv)
 
-    populate_urls(chat_data, db)
-    populate_files(chat_data, db)
+    with open('configs/discord_config.json' 'r') as f:
+        disc_config = json.load(f)
+
+    populate_urls(chat_data, db, disc_config['repost']['ignore_users'])
+    populate_files(chat_data, db, disc_config['repost']['ignore_users'])
 
     db.close()
 
