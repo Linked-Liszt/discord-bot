@@ -11,8 +11,10 @@ def create_db(fp: str):
                                 hash blob PRIMARY KEY,
                                 len integer NOT NULL,
                                 original_date integer,
-                                original_poster text,
-                                last_date integer
+                                original_author text,
+                                last_date integer,
+                                last_author,
+                                num_reposts integer
                                 )
     """
 
@@ -20,8 +22,10 @@ def create_db(fp: str):
                                 hash blob PRIMARY KEY,
                                 len integer NOT NULL,
                                 original_date integer,
-                                original_poster text,
-                                last_date integer
+                                original_author text,
+                                last_date integer,
+                                last_author,
+                                num_reposts integer
                                 )
     """
 
