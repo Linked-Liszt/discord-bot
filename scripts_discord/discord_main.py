@@ -5,14 +5,15 @@ import markov_module as mm
 import json
 import discord_utils as du
 import rate_module as rm
+import repost_module as rem
 
-MODEL_DIRS = '../markov_models'
+MODEL_DIRS = 'markov_models'
 
 client = discord.Client()
-with open('../configs/discord_config.json') as config_f:
+with open('configs/discord_config.json') as config_f:
     config = json.load(config_f)
 
-modules = [mm.Markov(MODEL_DIRS), rm.Rate()]
+modules = [mm.Markov(MODEL_DIRS), rm.Rate(), rem.Repost(config)]
 
 @client.event
 async def on_message(message: discord.Message):
@@ -63,6 +64,10 @@ def respond_mod_cmds(text:str) -> str:
         if module.abbrev == text_mod:
             text = f"--{module.abbrev} commands--\n"
             text += "\n".join([f"{cmd}: {descr}" for cmd, descr in module.commands.items()])
+
+            if len(module.commands) == 0:
+                text += "[No Commands]"
+
             return text
     return "!cmds: Module not found. See !modules"
 
