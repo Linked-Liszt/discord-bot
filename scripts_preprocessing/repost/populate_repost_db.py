@@ -75,7 +75,7 @@ def main():
 
     chat_data = pd.read_csv(args.channel_csv)
 
-    with open('configs/discord_config.json' 'r') as f:
+    with open('configs/discord_config.json', 'r') as f:
         disc_config = json.load(f)
 
     populate_urls(chat_data, db, disc_config['repost']['ignore_users'])

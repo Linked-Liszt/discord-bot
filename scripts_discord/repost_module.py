@@ -18,6 +18,11 @@ REPOST_REPLIES = [
     ":ref: State mandated repost callout:"
 ]
 
+REPOST_IGNORE = [
+    "repost",
+    "classic"
+]
+
 
 class Repost(dm.DiscordModule):
     def __init__(self, config: dict):
@@ -51,7 +56,7 @@ class Repost(dm.DiscordModule):
                 hash_data = ru.HashData(f_hash,
                                         f_len,
                                         message.attachments[0].url,
-                                        message.created_at.timestamp(),
+                                        datetime.datetime.now().timestamp(), #discord.py timestamps incorrect
                                         msg_author
                 )
                 async with self.db_lock:
@@ -63,13 +68,18 @@ class Repost(dm.DiscordModule):
         urls = ru.extract_urls(message.content)
         for url in urls:
             link_data = ru.LinkData(url,
-                                    message.created_at.timestamp(),
+                                    datetime.datetime.now().timestamp(), #discord.py timestamps incorrect
                                     msg_author
             )
             async with self.db_lock:
                 is_original, repost = ru.check_url_table(self.db_conns[message.channel.id], link_data)
             if not is_original:
                 reposts.append(repost)
+
+
+        ignores = [text in message.content.lower() for text in REPOST_IGNORE]
+        if True in ignores:
+            return
 
         if len(reposts) > 0:
             cur_repost = reposts[-1]
@@ -84,12 +94,6 @@ class Repost(dm.DiscordModule):
                 if cur_repost.num_reposts > 1: add_s = "s"
 
                 msg += f'\n Last Repost By: `{cur_repost.last_author}` on `{last_date}` ({cur_repost.num_reposts} repost{add_s} found)'
-
-
-
-            print(cur_repost)
-            print(datetime.datetime.now().timestamp())
-            print(message.created_at.timestamp())
 
             await message.channel.send(msg)
 
