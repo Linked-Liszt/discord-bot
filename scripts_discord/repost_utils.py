@@ -55,7 +55,7 @@ def _get_file_hash(fp: str, f_bytes: bytes) -> str:
 
 def _get_img_hash(fp: str, f_bytes: bytes) -> str:
     f_bytes = PIL.Image.open(io.BytesIO(f_bytes)).tobytes()
-    return len(f_bytes), hashlib.sha256(f_bytes.digest())
+    return len(f_bytes), hashlib.sha256(f_bytes).digest()
 
 def calculate_hash(fp: str, f_bytes: bytes) -> (bool, int, str):
     is_image = True
@@ -64,7 +64,7 @@ def calculate_hash(fp: str, f_bytes: bytes) -> (bool, int, str):
         if  True not in valid_ims: raise ValueError('Not an Image')
 
         f_len, f_hash = _get_img_hash(fp, f_bytes)
-    except:
+    except Exception as e:
         is_image = False
         f_len, f_hash = _get_file_hash(fp, f_bytes)
 
